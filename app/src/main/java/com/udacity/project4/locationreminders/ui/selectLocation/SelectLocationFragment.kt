@@ -9,6 +9,8 @@ import android.view.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -31,6 +33,8 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     private lateinit var binding: FragmentSelectLocationBinding
 
     private lateinit var mGoogleMap: GoogleMap
+
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
     private val locationPermissionRequest = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
         when {
@@ -56,6 +60,8 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
        val mapFragment = childFragmentManager.findFragmentById(R.id.fg_google_map) as SupportMapFragment
 
         mapFragment.getMapAsync(this)
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
         binding.viewModel = _viewModel
         binding.lifecycleOwner = this
@@ -106,7 +112,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         addMarkerOnLongClick()
         addPoiClick()
         setMapStyle()
-
+        startListenOnDeviceLocation()
         enableMyLocation(true)
     }
 
@@ -119,7 +125,8 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
                 .snippet(snippet)
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
             )
-            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(it,15f))
+
+            updateCameraZoom(it)
 
             onLocationSelected(PointOfInterest(it,"custom",getString(R.string.dropped_pin)))
         }
@@ -129,7 +136,8 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         mGoogleMap.setOnPoiClickListener {
             val poiMarker = mGoogleMap.addMarker(MarkerOptions().position(it.latLng)
                 .title(it.name))
-            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(it.latLng,15f))
+
+            updateCameraZoom(it.latLng)
 
             poiMarker?.showInfoWindow()
 
@@ -162,6 +170,34 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         locationPermissionRequest.launch(arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION))
+    }
+
+
+    @SuppressLint("MissingPermission")
+    private fun startListenOnDeviceLocation() {
+        try {
+            if (isPermissionGranted()) {
+                val locationResult = fusedLocationProviderClient.lastLocation
+                locationResult.addOnCompleteListener(requireActivity()) { task ->
+                    if (task.isSuccessful) {
+                        // Set the map's camera position to the current location of the device.
+                        val lastKnownLocation = task.result
+                        if (lastKnownLocation != null) {
+                            updateCameraZoom(LatLng(lastKnownLocation.latitude,
+                                lastKnownLocation.longitude))
+                        }
+                    }
+                }
+            }
+        } catch (e: SecurityException) {
+
+        }
+    }
+
+    private fun updateCameraZoom(latLng: LatLng){
+        mGoogleMap.moveCamera(
+            CameraUpdateFactory.newLatLngZoom(latLng, 16f)
+        )
     }
 
 }
