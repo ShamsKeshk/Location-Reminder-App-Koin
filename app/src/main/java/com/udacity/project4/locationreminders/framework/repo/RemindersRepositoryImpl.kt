@@ -5,6 +5,7 @@ import com.udacity.project4.locationreminders.framework.local.dataSource.LocalRe
 import com.udacity.project4.locationreminders.framework.local.dataSource.LocalReminderDataSourceImpl
 import com.udacity.project4.locationreminders.framework.model.Result
 import com.udacity.project4.locationreminders.framework.model.ReminderDataItem
+import com.udacity.project4.utils.wrapEspressoIdlingResource
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
@@ -25,8 +26,10 @@ class RemindersRepositoryImpl @Inject constructor(private val localDataSourceImp
      * @return Result the holds a Success with all the reminders or an Error object with the error message
      */
     override suspend fun getReminders(): List<ReminderDataItem> {
-        return localDataSourceImpl.getReminders().map {
-            it.asDomain()
+        wrapEspressoIdlingResource {
+            return localDataSourceImpl.getReminders().map {
+                it.asDomain()
+            }
         }
     }
 
@@ -34,9 +37,11 @@ class RemindersRepositoryImpl @Inject constructor(private val localDataSourceImp
      * Insert a reminder in the db.
      * @param reminder the reminder to be inserted
      */
-    override suspend fun saveReminder(reminder: ReminderDataEntity) =
-        withContext(ioDispatcher) {
-            localDataSourceImpl.saveReminder(reminder)
+    override suspend fun saveReminder(reminder: ReminderDataItem) =
+        wrapEspressoIdlingResource {
+            withContext(ioDispatcher) {
+                localDataSourceImpl.saveReminder(reminder.asEntity())
+            }
         }
 
     /**
@@ -44,16 +49,18 @@ class RemindersRepositoryImpl @Inject constructor(private val localDataSourceImp
      * @param id to be used to get the reminder
      * @return Result the holds a Success object with the Reminder or an Error object with the error message
      */
-    override suspend fun getReminder(id: String): Result<ReminderDataEntity> = withContext(ioDispatcher) {
-        try {
-            val reminder = localDataSourceImpl.getReminderById(id)
-            if (reminder != null) {
-                return@withContext Result.Success(reminder)
-            } else {
-                return@withContext Result.Error(Throwable("Reminder not found!"))
+    override suspend fun getReminder(id: String): Result<ReminderDataItem?> = withContext(ioDispatcher) {
+        wrapEspressoIdlingResource {
+            try {
+                val reminder = localDataSourceImpl.getReminderById(id)?.asDomain()
+                if (reminder != null) {
+                    return@withContext Result.Success(reminder)
+                } else {
+                    return@withContext Result.Error(Throwable("Reminder not found!"))
+                }
+            } catch (e: Exception) {
+                return@withContext Result.Error(e)
             }
-        } catch (e: Exception) {
-            return@withContext Result.Error(e)
         }
     }
 
@@ -61,8 +68,10 @@ class RemindersRepositoryImpl @Inject constructor(private val localDataSourceImp
      * Deletes all the reminders in the db
      */
     override suspend fun deleteAllReminders() {
-        withContext(ioDispatcher) {
-            localDataSourceImpl.deleteAllReminders()
+        wrapEspressoIdlingResource {
+            withContext(ioDispatcher) {
+                localDataSourceImpl.deleteAllReminders()
+            }
         }
     }
 }

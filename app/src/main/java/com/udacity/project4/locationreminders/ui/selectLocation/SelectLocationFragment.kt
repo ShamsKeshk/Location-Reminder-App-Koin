@@ -70,7 +70,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         _viewModel.selectedPOI.value = pointOfInterest
         _viewModel.latitude.value = pointOfInterest.latLng.latitude
         _viewModel.longitude.value = pointOfInterest.latLng.longitude
-        _viewModel.reminderSelectedLocationStr.value = pointOfInterest.name
+        _viewModel.setSelectedLocation(pointOfInterest.name)
 
         _viewModel.navigationCommand.value = NavigationCommand.Back
     }

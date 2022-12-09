@@ -19,7 +19,7 @@ class ReminderUseCasesModule {
 
     @Provides
     @Singleton
-    fun provideSaveRemindersUsesCase(remindersRepositoryImpl: RemindersRepositoryImpl): SaveReminderUseCase {
+    fun provideSaveRemindersUsesCase(remindersRepositoryImpl: ReminderRepository): SaveReminderUseCase {
         return SaveReminderUseCaseImpl(remindersRepositoryImpl)
     }
 

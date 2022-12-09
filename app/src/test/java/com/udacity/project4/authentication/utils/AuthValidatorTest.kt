@@ -5,6 +5,8 @@ import org.junit.Test
 import org.junit.jupiter.api.Assertions.*
 import org.junit.runner.RunWith
 
+//I Used Android JUnit4 here, as the matcher is used from android framework, and in case we removed it,
+// the test cases will fail
 @RunWith(AndroidJUnit4::class)
 internal class AuthValidatorTest{
 

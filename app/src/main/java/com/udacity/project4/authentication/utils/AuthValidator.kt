@@ -2,6 +2,7 @@ package com.udacity.project4.authentication.utils
 
 import android.util.Patterns
 
+//Tested Correctly
 class AuthValidator {
 
     companion object{

@@ -9,7 +9,7 @@ import com.udacity.project4.locationreminders.framework.model.Result
  */
 interface ReminderRepository {
     suspend fun getReminders(): List<ReminderDataItem>
-    suspend fun saveReminder(reminder: ReminderDataEntity)
-    suspend fun getReminder(id: String): Result<ReminderDataEntity>
+    suspend fun saveReminder(reminder: ReminderDataItem)
+    suspend fun getReminder(id: String): Result<ReminderDataItem?>
     suspend fun deleteAllReminders()
 }

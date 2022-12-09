@@ -17,7 +17,7 @@ data class ReminderDataItem(
     var latitude: Double?,
     var longitude: Double?,
     val id: String = UUID.randomUUID().toString()
-) : Parcelable {
+) : Parcelable, Cloneable {
 
     fun asEntity(): ReminderDataEntity{
         return ReminderDataEntity(

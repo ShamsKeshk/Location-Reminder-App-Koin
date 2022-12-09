@@ -22,6 +22,7 @@ import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingEvent
 import com.udacity.project4.locationreminders.framework.repo.ReminderRepository
 import com.udacity.project4.locationreminders.framework.local.data.ReminderDataEntity
+import com.udacity.project4.locationreminders.framework.model.ReminderDataItem
 import com.udacity.project4.utils.sendNotification
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -63,11 +64,11 @@ class GeofenceTransitionsJobIntentService(private val reminderRepository: Remind
         }
     }
 
-    private fun displayNotificationForReminder(reminderDataResult: Result<ReminderDataEntity>){
+    private fun displayNotificationForReminder(reminderDataResult: Result<ReminderDataItem?>){
         if (!reminderDataResult.isSuccessful())
             return
 
-        reminderDataResult.getCurrentData()?.asDomain()?.let { reminderData ->
+        reminderDataResult.getCurrentData()?.let { reminderData ->
             sendNotification(applicationContext, reminderData)
         }
     }
