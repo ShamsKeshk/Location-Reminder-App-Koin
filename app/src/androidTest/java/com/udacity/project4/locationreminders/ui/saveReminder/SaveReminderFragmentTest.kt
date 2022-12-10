@@ -3,6 +3,7 @@ package com.udacity.project4.locationreminders.ui.saveReminder
 import android.os.Bundle
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.FragmentFactory
+import androidx.fragment.app.testing.FragmentScenario
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.espresso.Espresso.onView
@@ -48,35 +49,28 @@ internal class SaveReminderFragmentTest{
     @get:Rule
     var hiltRule = HiltAndroidRule(this)
 
-    lateinit var geofencingManagerTest: GeofencingManagerTest
+    private lateinit var saveReminderViewModel: SaveReminderViewModel
+
+    private lateinit var navController: NavController
 
     @Before
     fun initData() {
         hiltRule.inject()
-        geofencingManagerTest = GeofencingManagerTest()
+
+        initFragmentScenario()
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun fillReminderDataWithoutTitle_snackBarMessageShouldBeTitleMissing() = runTest{
-        val navController = Mockito.mock(NavController::class.java)
-
-        var viewModel: SaveReminderViewModel? = null
-        val scenario = launchFragmentInHiltContainer<SaveReminderFragment>(
-            Bundle(), R.style.AppTheme,
-            FragmentFactory()
-        ) {
-            Navigation.setViewNavController(this.view!!, navController)
-            viewModel = _viewModel
-            mGeofencingManager = geofencingManagerTest
-        }
+        saveReminderViewModel.setSelectedLocation(reminderItem.location!!)
+        saveReminderViewModel.latitude.value = reminderItem.latitude
+        saveReminderViewModel.longitude.value = reminderItem.longitude
 
         onView(withId(R.id.reminderDescription)).perform(typeText(reminderItem.description),closeSoftKeyboard())
-        viewModel?.setSelectedLocation(reminderItem.location!!)
-
         onView(withId(R.id.saveReminder)).perform(ViewActions.click())
 
-        val data = viewModel?.showSnackBarInt?.getOrAwaitValue()
+        val data = saveReminderViewModel.showSnackBarInt.getOrAwaitValue()
 
         assertEquals(data,R.string.err_enter_title)
 
@@ -85,24 +79,15 @@ internal class SaveReminderFragmentTest{
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun fillReminderDataWithoutLocation_snackBarMessageShouldBeLocationMissing() = runTest{
-        val navController = Mockito.mock(NavController::class.java)
-
-        var viewModel: SaveReminderViewModel? = null
-        val scenario = launchFragmentInHiltContainer<SaveReminderFragment>(
-            Bundle(), R.style.AppTheme,
-            FragmentFactory()
-        ) {
-            Navigation.setViewNavController(this.view!!, navController)
-            viewModel = _viewModel
-            mGeofencingManager = geofencingManagerTest
-        }
+        saveReminderViewModel.latitude.value = reminderItem.latitude
+        saveReminderViewModel.longitude.value = reminderItem.longitude
 
         onView(withId(R.id.reminderTitle)).perform(typeText(reminderItem.title),closeSoftKeyboard())
         onView(withId(R.id.reminderDescription)).perform(typeText(reminderItem.description),closeSoftKeyboard())
 
         onView(withId(R.id.saveReminder)).perform(ViewActions.click())
 
-        val data = viewModel?.showSnackBarInt?.getOrAwaitValue()
+        val data = saveReminderViewModel.showSnackBarInt.getOrAwaitValue()
 
         assertEquals(data,R.string.err_select_location)
 
@@ -111,27 +96,30 @@ internal class SaveReminderFragmentTest{
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun fillReminderDataCompletely_dataShouldBeSavedAndNavigatedToListScreen() = runTest{
-        val navController = Mockito.mock(NavController::class.java)
-
-        var viewModel: SaveReminderViewModel? = null
-        val scenario = launchFragmentInHiltContainer<SaveReminderFragment>(
-            Bundle(), R.style.AppTheme,
-            FragmentFactory()
-        ) {
-            Navigation.setViewNavController(this.view!!, navController)
-            viewModel = _viewModel
-            mGeofencingManager = geofencingManagerTest
-        }
+        saveReminderViewModel.latitude.value = reminderItem.latitude
+        saveReminderViewModel.longitude.value = reminderItem.longitude
+        saveReminderViewModel.setSelectedLocation(reminderItem.location!!)
 
         onView(withId(R.id.reminderTitle)).perform(typeText(reminderItem.title),closeSoftKeyboard())
         onView(withId(R.id.reminderDescription)).perform(typeText(reminderItem.description),closeSoftKeyboard())
-        viewModel?.setSelectedLocation(reminderItem.location!!)
 
         onView(withId(R.id.saveReminder)).perform(ViewActions.click())
 
         // THEN - Verify that we navigate to the add screen
-        assertEquals(NavigationCommand.Back,viewModel?.navigationCommand?.getOrAwaitValue())
+        assertEquals(NavigationCommand.Back,saveReminderViewModel.navigationCommand.getOrAwaitValue())
 
         Mockito.verify(navController).popBackStack()
+    }
+
+    private fun initFragmentScenario(){
+        navController = Mockito.mock(NavController::class.java)
+
+        launchFragmentInHiltContainer<SaveReminderFragment>(
+            Bundle(), R.style.AppTheme,
+            FragmentFactory()
+        ) {
+            Navigation.setViewNavController(this.view!!, navController)
+            saveReminderViewModel = _viewModel
+        }
     }
 }

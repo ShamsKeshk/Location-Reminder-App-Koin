@@ -62,8 +62,10 @@ class SaveReminderFragment : BaseFragment() {
 
         binding.saveReminder.setOnClickListener {
             val reminderDataItem = _viewModel.createReminderDataItem()
-            mGeofencingManager.startAddSelectedGeofence(reminderDataItem)
-            _viewModel.validateAndSaveReminder(reminderDataItem)
+            val isDataValid = _viewModel.validateAndSaveReminder(reminderDataItem)
+            if (isDataValid){
+                mGeofencingManager.startAddSelectedGeofence(reminderDataItem)
+            }
         }
     }
 
