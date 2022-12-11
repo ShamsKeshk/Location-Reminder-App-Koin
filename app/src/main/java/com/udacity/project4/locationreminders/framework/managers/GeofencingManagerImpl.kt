@@ -10,14 +10,12 @@ import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
 import com.udacity.project4.locationreminders.framework.model.ReminderDataItem
 import com.udacity.project4.locationreminders.framework.receivers.GeofenceBroadcastReceiver
-import dagger.hilt.android.qualifiers.ActivityContext
-import javax.inject.Inject
 
 private const val GEOFENCE_RADIUS_IN_METERS = 1609f
 private const val GEOFENCE_EXPIRATION_IN_HOURS: Long = 12
 private const val GEOFENCE_EXPIRATION_IN_MILLISECONDS: Long = GEOFENCE_EXPIRATION_IN_HOURS * 60 * 60 * 1000
 
-class GeofencingManagerImpl @Inject constructor(@ActivityContext val context: Context): GeofencingManager {
+class GeofencingManagerImpl constructor(val context: Context): GeofencingManager {
 
     private var mGeofencingClient: GeofencingClient? = null
 

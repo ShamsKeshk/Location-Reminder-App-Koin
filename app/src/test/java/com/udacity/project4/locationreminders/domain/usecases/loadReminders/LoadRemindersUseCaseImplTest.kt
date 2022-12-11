@@ -2,7 +2,7 @@ package com.udacity.project4.locationreminders.domain.usecases.loadReminders
 
 import com.udacity.project4.locationreminders.framework.model.ReminderDataItem
 import com.udacity.project4.locationreminders.framework.repo.FakeRemindersRepository
-import dagger.hilt.android.testing.HiltAndroidTest
+//import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before

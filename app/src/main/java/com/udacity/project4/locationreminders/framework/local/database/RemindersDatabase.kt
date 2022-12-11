@@ -24,6 +24,7 @@ abstract class RemindersDatabase : RoomDatabase() {
                 DATABASE_NAME
             )
                 .fallbackToDestructiveMigration()
+                .allowMainThreadQueries()
                 .build()
 
         fun getInstance(context: Context): RemindersDatabase {

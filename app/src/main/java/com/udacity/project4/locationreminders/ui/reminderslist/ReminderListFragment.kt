@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.activityViewModels
 import com.firebase.ui.auth.AuthUI
 import com.udacity.project4.R
 import com.udacity.project4.authentication.AuthenticationActivity
@@ -15,12 +14,11 @@ import com.udacity.project4.locationreminders.domain.viewmodel.RemindersListView
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import com.udacity.project4.utils.setTitle
 import com.udacity.project4.utils.setup
-import dagger.hilt.android.AndroidEntryPoint
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-@AndroidEntryPoint
 class ReminderListFragment : BaseFragment() {
 
-    override val _viewModel: RemindersListViewModel by activityViewModels()
+    override val _viewModel: RemindersListViewModel by sharedViewModel()
 
     private lateinit var binding: FragmentRemindersBinding
     override fun onCreateView(

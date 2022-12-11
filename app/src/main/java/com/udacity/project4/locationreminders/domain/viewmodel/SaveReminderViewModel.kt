@@ -8,14 +8,9 @@ import com.udacity.project4.base.BaseViewModel
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.locationreminders.domain.usecases.saveReminder.SaveReminderUseCase
 import com.udacity.project4.locationreminders.framework.model.ReminderDataItem
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class SaveReminderViewModel @Inject constructor(
-    private val saveReminderUseCase: SaveReminderUseCase
-) : BaseViewModel() {
+class SaveReminderViewModel constructor(private val saveReminderUseCase: SaveReminderUseCase) : BaseViewModel() {
 
     val reminderTitle = MutableLiveData<String?>()
     val reminderDescription = MutableLiveData<String?>()

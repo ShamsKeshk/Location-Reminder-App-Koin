@@ -1,19 +1,21 @@
 package com.udacity.project4
 
 import android.app.Application
-import androidx.hilt.work.HiltWorkerFactory
-import androidx.work.Configuration
-import dagger.hilt.android.HiltAndroidApp
-import javax.inject.Inject
+import com.udacity.project4.utils.getKoinModules
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.startKoin
 
-@HiltAndroidApp
-class MyApp : Application() , Configuration.Provider {
+class MyApp : Application() {
 
-    @Inject
-    lateinit var workerFactory: HiltWorkerFactory
+    override fun onCreate() {
+        super.onCreate()
 
-    override fun getWorkManagerConfiguration() =
-        Configuration.Builder()
-            .setWorkerFactory(workerFactory)
-            .build()
+        startKoin {
+            androidLogger()
+            androidContext(this@MyApp)
+            modules(getKoinModules())
+        }
+    }
+
 }

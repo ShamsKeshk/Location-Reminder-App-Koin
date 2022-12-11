@@ -1,13 +1,10 @@
 package com.udacity.project4.locationreminders.framework.repo
 
-import com.udacity.project4.locationreminders.framework.local.data.ReminderDataEntity
 import com.udacity.project4.locationreminders.framework.local.dataSource.LocalReminderDataSource
-import com.udacity.project4.locationreminders.framework.local.dataSource.LocalReminderDataSourceImpl
 import com.udacity.project4.locationreminders.framework.model.Result
 import com.udacity.project4.locationreminders.framework.model.ReminderDataItem
 import com.udacity.project4.utils.wrapEspressoIdlingResource
 import kotlinx.coroutines.*
-import javax.inject.Inject
 
 /**
  * Concrete implementation of a data source as a db.
@@ -17,7 +14,7 @@ import javax.inject.Inject
  * @param remindersDao the dao that does the Room db operations
  * @param ioDispatcher a coroutine dispatcher to offload the blocking IO tasks
  */
-class RemindersRepositoryImpl @Inject constructor(private val localDataSourceImpl: LocalReminderDataSource,
+class RemindersRepositoryImpl constructor(private val localDataSourceImpl: LocalReminderDataSource,
                                                   private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ReminderRepository {
 

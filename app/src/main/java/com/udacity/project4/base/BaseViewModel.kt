@@ -4,8 +4,6 @@ package com.udacity.project4.base
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.udacity.project4.utils.SingleLiveEvent
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 
 /**
  * Base class for View Models to declare the common LiveData objects in one place

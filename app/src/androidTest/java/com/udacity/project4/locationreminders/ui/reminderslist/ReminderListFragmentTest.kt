@@ -1,10 +1,11 @@
 package com.udacity.project4.locationreminders.ui.reminderslist
 
 import android.os.Bundle
-import androidx.fragment.app.FragmentFactory
+import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions
@@ -12,42 +13,41 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import androidx.test.filters.MediumTest
 import org.junit.runner.RunWith
 import com.udacity.project4.R
-import com.udacity.project4.locationreminders.domain.usecases.saveReminder.SaveReminderUseCaseImpl
+import com.udacity.project4.di.getKoinTestingModules
+import com.udacity.project4.locationreminders.domain.usecases.saveReminder.SaveReminderUseCase
 import com.udacity.project4.locationreminders.framework.model.ReminderDataItem
-import com.udacity.project4.util.launchFragmentInHiltContainer
-import dagger.hilt.android.testing.HiltAndroidRule
-import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.HiltTestApplication
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import org.koin.test.KoinTest
+import org.koin.test.inject
 import org.mockito.Mockito
-import org.robolectric.annotation.Config
-import javax.inject.Inject
 
-@HiltAndroidTest
-@Config(application = HiltTestApplication::class)
 @RunWith(AndroidJUnit4::class)
 @LargeTest
-internal class ReminderListFragmentTest{
+internal class ReminderListFragmentTest : KoinTest {
 
     private val reminderItem1 = ReminderDataItem("udacity",
         "visit udacity location","new York",
         2.333,-33.45555,"45")
 
-    @get:Rule
-    var hiltRule = HiltAndroidRule(this)
-
-    @Inject
-    lateinit var saveReminderUseCaseImpl: SaveReminderUseCaseImpl
+    val saveReminderUseCaseImpl: SaveReminderUseCase by inject<SaveReminderUseCase>()
 
     @Before
-    fun initData() {
-        hiltRule.inject()
+    fun initTest(){
+
+        stopKoin()
+        startKoin {
+            androidLogger()
+            androidContext(ApplicationProvider.getApplicationContext())
+            modules(getKoinTestingModules())
+        }
     }
 
 
@@ -55,10 +55,12 @@ internal class ReminderListFragmentTest{
     fun clickAddReminder() = runTest{
         saveReminderUseCaseImpl.saveReminder(reminderItem1)
         val navController = Mockito.mock(NavController::class.java)
-        val scenario = launchFragmentInHiltContainer<ReminderListFragment>(Bundle(), R.style.AppTheme,
-            FragmentFactory()
-        ){
-            Navigation.setViewNavController(this.view!!, navController)
+
+        val scenario = launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
+
+        scenario.onFragment {
+            navController.setGraph(R.navigation.nav_graph)
+            Navigation.setViewNavController(it.requireView(), navController)
         }
 
 
@@ -76,10 +78,13 @@ internal class ReminderListFragmentTest{
         //Given
         saveReminderUseCaseImpl.saveReminder(reminderItem1)
         val navController = Mockito.mock(NavController::class.java)
-        val scenario = launchFragmentInHiltContainer<ReminderListFragment>(Bundle(), R.style.AppTheme,
-            FragmentFactory()
-        ){
-            Navigation.setViewNavController(this.view!!, navController)
+
+        val scenario = launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
+
+        scenario.onFragment {
+            navController.setGraph(R.navigation.nav_graph)
+
+            Navigation.setViewNavController(it.requireView(), navController)
         }
 
         // WHEN - Click on the first list item
@@ -90,8 +95,4 @@ internal class ReminderListFragmentTest{
                     ViewMatchers.hasDescendant(ViewMatchers.withText(reminderItem1.title)), ViewActions.click()
                 ))
     }
-
-
-
-
 }

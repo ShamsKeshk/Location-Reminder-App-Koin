@@ -22,10 +22,8 @@ import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentSelectLocationBinding
 import com.udacity.project4.locationreminders.domain.viewmodel.SaveReminderViewModel
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
-import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
-@AndroidEntryPoint
 class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 
     override val _viewModel: SaveReminderViewModel by activityViewModels()

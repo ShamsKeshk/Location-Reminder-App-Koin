@@ -10,6 +10,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.*
 import org.junit.runner.RunWith
+import org.koin.core.context.stopKoin
 
 @RunWith(AndroidJUnit4::class)
 internal class SaveReminderViewModelTest{
@@ -24,6 +25,7 @@ internal class SaveReminderViewModelTest{
 
     @Before
     fun initializeModels(){
+        stopKoin()
         fakeSaceReminderUseCaseTest = FakeSaveReminderUseCaseTest()
         saveReminderViewModel = SaveReminderViewModel(fakeSaceReminderUseCaseTest)
     }

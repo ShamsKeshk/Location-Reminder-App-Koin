@@ -21,19 +21,16 @@ import androidx.core.app.JobIntentService
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingEvent
 import com.udacity.project4.locationreminders.framework.repo.ReminderRepository
-import com.udacity.project4.locationreminders.framework.local.data.ReminderDataEntity
 import com.udacity.project4.locationreminders.framework.model.ReminderDataItem
 import com.udacity.project4.utils.sendNotification
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import com.udacity.project4.locationreminders.framework.model.Result
+import org.koin.android.ext.android.get
 
 
-class GeofenceTransitionsJobIntentService(private val reminderRepository: ReminderRepository? = null) : JobIntentService() {
-
-
-    constructor(): this(null)
+class GeofenceTransitionsJobIntentService : JobIntentService() {
 
     override fun onHandleWork(intent: Intent) {
         val geofencingEvent = GeofencingEvent.fromIntent(intent)
@@ -57,8 +54,8 @@ class GeofenceTransitionsJobIntentService(private val reminderRepository: Remind
 
             CoroutineScope(Dispatchers.IO).launch {
                 triggeringGeofences.forEach {
-                    reminderRepository?.getReminder(it.requestId)
-                        ?.let { it1 -> displayNotificationForReminder(it1) }
+                    val reminderRepository: ReminderRepository = get()
+                    displayNotificationForReminder(reminderRepository.getReminder(it.requestId))
                 }
             }
         }

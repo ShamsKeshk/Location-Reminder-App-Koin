@@ -8,12 +8,10 @@ import androidx.databinding.DataBindingUtil
 import com.udacity.project4.R
 import com.udacity.project4.databinding.ActivityReminderDescriptionBinding
 import com.udacity.project4.locationreminders.framework.model.ReminderDataItem
-import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Activity that displays the reminder details after the user clicks on the notification
  */
-@AndroidEntryPoint
 class ReminderDescriptionActivity : AppCompatActivity() {
 
     companion object {

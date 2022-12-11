@@ -3,12 +3,40 @@
   <component name="AndroidTestResultsUserPreferences">
     <option name="androidTestResultsTableState">
       <map>
-        <entry key="-1254358683">
+        <entry key="-1954653611">
           <value>
             <AndroidTestResultsTableState>
               <option name="preferredColumnWidths">
                 <map>
                   <entry key="Duration" value="90" />
+                  <entry key="Nexus_7_API_29" value="120" />
+                  <entry key="Tests" value="360" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
+        <entry key="-1874049404">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
+                  <entry key="Nexus_7_API_29" value="120" />
+                  <entry key="Tests" value="360" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
+        <entry key="-1254358683">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="DBPDU20721005626" value="120" />
+                  <entry key="Duration" value="90" />
+                  <entry key="HUAWEI&#10; JEF-NX9" value="120" />
                   <entry key="Nexus_7_API_29" value="120" />
                   <entry key="Tests" value="360" />
                 </map>
@@ -47,7 +75,9 @@
             <AndroidTestResultsTableState>
               <option name="preferredColumnWidths">
                 <map>
+                  <entry key="DBPDU20721005626" value="120" />
                   <entry key="Duration" value="90" />
+                  <entry key="HUAWEI&#10; JEF-NX9" value="120" />
                   <entry key="Nexus_7_API_29" value="120" />
                   <entry key="Tests" value="360" />
                 </map>
@@ -68,12 +98,29 @@
             </AndroidTestResultsTableState>
           </value>
         </entry>
+        <entry key="28629151">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="DBPDU20721005626" value="120" />
+                  <entry key="Duration" value="90" />
+                  <entry key="HUAWEI&#10; JEF-NX9" value="120" />
+                  <entry key="Nexus_7_API_29" value="120" />
+                  <entry key="Tests" value="360" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
         <entry key="849749806">
           <value>
             <AndroidTestResultsTableState>
               <option name="preferredColumnWidths">
                 <map>
+                  <entry key="DBPDU20721005626" value="120" />
                   <entry key="Duration" value="90" />
+                  <entry key="HUAWEI&#10; JEF-NX9" value="120" />
                   <entry key="Nexus_7_API_29" value="120" />
                   <entry key="Tests" value="360" />
                 </map>

@@ -5,15 +5,13 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
-import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Base Fragment to observe on the common LiveData objects
  */
-@AndroidEntryPoint
+
 abstract class BaseFragment : Fragment() {
     /**
      * Every fragment has to have an instance of a view model that extends from the BaseViewModel

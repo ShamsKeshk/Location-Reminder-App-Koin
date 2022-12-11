@@ -1,13 +1,11 @@
 package com.udacity.project4.locationreminders.framework.local.database
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
+import com.udacity.project4.di.getKoinTestingModules
 import com.udacity.project4.locationreminders.framework.model.ReminderDataItem
-import dagger.hilt.android.testing.HiltAndroidRule
-import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.*
 import org.junit.After
@@ -16,32 +14,37 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import javax.inject.Inject
-import javax.inject.Named
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import org.koin.core.qualifier.named
+import org.koin.test.KoinTest
+import org.koin.test.inject
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 @SmallTest
-@HiltAndroidTest
-internal class RemindersDatabaseTest{
+internal class RemindersDatabaseTest: KoinTest {
 
     private val reminderItem1 = ReminderDataItem("Google",
         "visit Silicon Valley","new York",
         5.122,-39.19225)
 
     @get:Rule
-    var hiltRule = HiltAndroidRule(this)
-
-    @Inject
-    @Named("RemindersTestingDatabase")
-    lateinit var database: RemindersDatabase
-
-    @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
+
+
+    val database by inject<RemindersDatabase>(named("testing"))
 
     @Before
     fun initializeDatabase() {
-        hiltRule.inject()
+        stopKoin()
+        startKoin {
+            androidLogger()
+            androidContext(ApplicationProvider.getApplicationContext())
+            modules(getKoinTestingModules())
+        }
     }
 
     @Test

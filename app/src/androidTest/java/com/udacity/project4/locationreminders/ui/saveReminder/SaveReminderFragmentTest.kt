@@ -1,11 +1,12 @@
 package com.udacity.project4.locationreminders.ui.saveReminder
 
+import android.app.Application
 import android.os.Bundle
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.fragment.app.FragmentFactory
-import androidx.fragment.app.testing.FragmentScenario
+import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.*
@@ -14,14 +15,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.udacity.project4.R
 import com.udacity.project4.base.NavigationCommand
+import com.udacity.project4.di.getKoinTestingModules
 import com.udacity.project4.locationreminders.domain.viewmodel.SaveReminderViewModel
-import com.udacity.project4.locationreminders.framework.managers.GeofencingManagerTest
 import com.udacity.project4.locationreminders.framework.model.ReminderDataItem
 import com.udacity.project4.util.getOrAwaitValue
-import com.udacity.project4.util.launchFragmentInHiltContainer
-import dagger.hilt.android.testing.HiltAndroidRule
-import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.HiltTestApplication
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -29,15 +26,17 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 import org.mockito.Mockito
-import org.robolectric.annotation.Config
 
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.stopKoin
+import org.koin.test.KoinTest
 
-@HiltAndroidTest
-@Config(application = HiltTestApplication::class)
 @RunWith(AndroidJUnit4::class)
 @LargeTest
-internal class SaveReminderFragmentTest{
+internal class SaveReminderFragmentTest: KoinTest{
 
     private val reminderItem = ReminderDataItem("Google",
         "we are on Silicon Valley, great Challenges Being there","new York",
@@ -46,18 +45,26 @@ internal class SaveReminderFragmentTest{
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    @get:Rule
-    var hiltRule = HiltAndroidRule(this)
+    private lateinit var appContext: Application
 
     private lateinit var saveReminderViewModel: SaveReminderViewModel
 
     private lateinit var navController: NavController
 
+
     @Before
     fun initData() {
-        hiltRule.inject()
-
+        initKoinModules()
         initFragmentScenario()
+    }
+
+    fun initKoinModules(){
+        stopKoin()
+        startKoin {
+            androidLogger()
+            androidContext(ApplicationProvider.getApplicationContext())
+            modules(getKoinTestingModules())
+        }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -114,12 +121,11 @@ internal class SaveReminderFragmentTest{
     private fun initFragmentScenario(){
         navController = Mockito.mock(NavController::class.java)
 
-        launchFragmentInHiltContainer<SaveReminderFragment>(
-            Bundle(), R.style.AppTheme,
-            FragmentFactory()
-        ) {
-            Navigation.setViewNavController(this.view!!, navController)
-            saveReminderViewModel = _viewModel
+        val scenario = launchFragmentInContainer<SaveReminderFragment>(Bundle(), R.style.AppTheme)
+
+        scenario.onFragment {
+            Navigation.setViewNavController(it.view!!, navController)
+            saveReminderViewModel = it._viewModel
         }
     }
 }

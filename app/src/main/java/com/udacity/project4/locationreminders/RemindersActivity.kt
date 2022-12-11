@@ -8,12 +8,10 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.udacity.project4.R
 import com.udacity.project4.databinding.ActivityRemindersBinding
-import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * The RemindersActivity that holds the reminders fragments
  */
-@AndroidEntryPoint
 class RemindersActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRemindersBinding

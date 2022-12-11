@@ -14,10 +14,7 @@ import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.hideKeyboard
 import com.udacity.project4.databinding.FragmentSignupBinding
 import com.udacity.project4.locationreminders.RemindersActivity
-import dagger.hilt.android.AndroidEntryPoint
 
-
-@AndroidEntryPoint
 class SignupFragment : BaseFragment() {
 
     lateinit var binding: FragmentSignupBinding

@@ -6,11 +6,9 @@ import com.udacity.project4.authentication.utils.AuthValidator
 import com.udacity.project4.base.BaseViewModel
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.utils.SingleLiveEvent
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 
-@HiltViewModel
-class SignupViewModel @Inject constructor(): BaseViewModel() {
+
+class SignupViewModel: BaseViewModel() {
 
     var isShouldValidateFields: MutableLiveData<Boolean> = MutableLiveData(false)
 

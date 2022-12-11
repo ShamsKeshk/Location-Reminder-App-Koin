@@ -6,12 +6,9 @@ import com.udacity.project4.base.BaseViewModel
 import com.udacity.project4.locationreminders.domain.usecases.loadReminders.LoadRemindersUseCase
 import com.udacity.project4.locationreminders.framework.model.ReminderDataItem
 import com.udacity.project4.locationreminders.framework.model.Result
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class RemindersListViewModel @Inject constructor(private val loadRemindersUseCase: LoadRemindersUseCase) : BaseViewModel() {
+class RemindersListViewModel constructor(private val loadRemindersUseCase: LoadRemindersUseCase) : BaseViewModel() {
     // list that holds the reminder data to be displayed on the UI
     val remindersList = MutableLiveData<List<ReminderDataItem>>()
 

@@ -1,15 +1,22 @@
 package com.udacity.project4.authentication.utils
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.*
 import org.junit.runner.RunWith
+import org.koin.core.context.stopKoin
 
 //I Used Android JUnit4 here, as the matcher is used from android framework, and in case we removed it,
 // the test cases will fail
 @RunWith(AndroidJUnit4::class)
 internal class AuthValidatorTest{
 
+
+    @Before
+    fun initTestSession(){
+        stopKoin()
+    }
 
     @Test
     fun isEmailValid_emptyState_returnFalse(){
