@@ -1,8 +1,13 @@
 package com.udacity.project4.locationreminders.framework.repo
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import com.udacity.project4.locationreminders.framework.local.dataSource.FakeLocalReminderDataSource
+import com.udacity.project4.di.getKoinTestingModules
 import com.udacity.project4.locationreminders.framework.local.dataSource.LocalReminderDataSource
+import com.udacity.project4.locationreminders.framework.local.dataSource.LocalReminderDataSourceImpl
+import com.udacity.project4.locationreminders.framework.local.database.RemindersDatabase
 import com.udacity.project4.locationreminders.framework.model.ReminderDataItem
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -10,8 +15,22 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.*
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.test.StandardTestDispatcher
+import org.junit.Rule
+import org.junit.runner.RunWith
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import org.koin.core.qualifier.named
+import org.koin.test.KoinTest
+import org.koin.test.inject
+
+@ExperimentalCoroutinesApi
+@RunWith(AndroidJUnit4::class)
 @SmallTest
-internal class RemindersRepositoryImplTest{
+internal class RemindersRepositoryImplTest: KoinTest{
 
     private val reminderItem1 = ReminderDataItem("udacity",
         "visit udacity location","new York",
@@ -29,11 +48,27 @@ internal class RemindersRepositoryImplTest{
     private lateinit var fakeLocalReminderDataSource: LocalReminderDataSource
     private lateinit var remindersRepositoryImpl: RemindersRepositoryImpl
 
+    @get:Rule
+    var instantExecutorRule = InstantTaskExecutorRule()
+
+    val database by inject<RemindersDatabase>(named("testing"))
+
     @Before
     fun createDataSourceAndRepo(){
-        fakeLocalReminderDataSource = FakeLocalReminderDataSource()
-        remindersRepositoryImpl = RemindersRepositoryImpl(fakeLocalReminderDataSource)
+        initializeDatabase()
+        remindersRepositoryImpl = RemindersRepositoryImpl(LocalReminderDataSourceImpl(database),Dispatchers.Main)
     }
+
+
+    fun initializeDatabase() {
+        stopKoin()
+        startKoin {
+            androidLogger()
+            androidContext(ApplicationProvider.getApplicationContext())
+            modules(getKoinTestingModules())
+        }
+    }
+
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
@@ -87,13 +122,13 @@ internal class RemindersRepositoryImplTest{
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun getRemindersById_passInvalidId_returnErrorResult() = runTest {
+    fun getRemindersById_passInvalidId_returnErrorResult() = runTest(StandardTestDispatcher()) {
 
         //Given
         remindersRepositoryImpl.saveReminder(reminderItem2)
 
         //When
-        val result = remindersRepositoryImpl.getReminder("invalidId")
+        val result = remindersRepositoryImpl.getReminder("inValidId")
         val error = result.getCurrentError()
 
         //Then

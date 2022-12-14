@@ -23,13 +23,18 @@ class FakeRemindersRepository: ReminderRepository {
     }
 
     override suspend fun getReminder(id: String): Result<ReminderDataItem?> {
+
+        if (shouldReturnError)
+            return Result.Error(Throwable(fakeGetReminderErrorMessage))
+
        val item = remindersData.find {
            it.id == id
        }
 
-        return when(shouldReturnError){
-            true -> Result.Error(Throwable(fakeGetReminderErrorMessage))
-            else -> Result.Success(item)
+        return if(item != null){
+            Result.Success(item)
+        }else {
+            Result.Error(Throwable("Reminder not found!"))
         }
     }
 

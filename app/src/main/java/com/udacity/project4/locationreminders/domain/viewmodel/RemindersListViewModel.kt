@@ -21,8 +21,7 @@ class RemindersListViewModel constructor(private val loadRemindersUseCase: LoadR
         viewModelScope.launch {
             //interacting with the dataSource has to be through a coroutine
             val result = try {
-                val data = loadRemindersUseCase.getReminders()
-                Result.Success(data)
+                loadRemindersUseCase.getReminders()
             }catch (exception: Exception){
                 Result.Error(exception)
             }
@@ -30,7 +29,7 @@ class RemindersListViewModel constructor(private val loadRemindersUseCase: LoadR
             showLoading.postValue(false)
             when (result) {
                 is Result.Success<*> -> {
-                    remindersList.value = result.getCurrentData()?.getCurrentData()
+                    remindersList.value = result.getCurrentData()
                 }
                 is Result.Error ->
                     showSnackBar.value = result.exception?.localizedMessage

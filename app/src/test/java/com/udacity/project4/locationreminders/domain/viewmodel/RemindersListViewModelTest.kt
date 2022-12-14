@@ -59,6 +59,22 @@ internal class RemindersListViewModelTest{
     }
 
     @Test
+    fun loadReminders_sendFailure_SnackBarShouldHaveError(){
+
+        //Given
+        fakeLoadRemindersUseCaseImpl.shouldReturnError = true
+        mainCoroutineRule.pauseDispatcher()
+
+        //When
+        remindersListViewModel.loadReminders()
+
+        mainCoroutineRule.resumeDispatcher()
+
+        //Then
+        assertEquals(fakeLoadRemindersUseCaseImpl.defaultErrorMessage, remindersListViewModel.showSnackBar.getOrAwaitValue())
+    }
+
+    @Test
     fun checkLoading_testLoadingEvent_eventTriggeredAndUpdated() = runTest{
 
         //Given

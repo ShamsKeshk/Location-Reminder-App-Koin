@@ -1,13 +1,9 @@
 package com.udacity.project4.locationreminders.ui.saveReminder
 
-import android.Manifest
-import android.annotation.SuppressLint
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.contract.ActivityResultContracts
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentSaveReminderBinding
@@ -37,26 +33,11 @@ class SaveReminderFragment : BaseFragment() {
         return binding.root
     }
 
-    private val locationPermissionRequest = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-        when {
-            permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
-                _viewModel.navigationCommand.value =
-                    NavigationCommand.To(SaveReminderFragmentDirections.actionSaveReminderFragmentToSelectLocationFragment())
-            }
-            permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
-                _viewModel.navigationCommand.value =
-                    NavigationCommand.To(SaveReminderFragmentDirections.actionSaveReminderFragmentToSelectLocationFragment())
-            } else -> {
-
-        }
-        }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.selectLocation.setOnClickListener {
-            launchRegisterPermission()
+            navigateToSelectLocationScreen()
         }
 
         binding.saveReminder.setOnClickListener {
@@ -74,18 +55,8 @@ class SaveReminderFragment : BaseFragment() {
         _viewModel.onClear()
     }
 
-    @SuppressLint("MissingPermission")
-    fun launchRegisterPermission(){
-        val permissions = mutableListOf<String>().apply {
-            add(Manifest.permission.ACCESS_FINE_LOCATION)
-            add(Manifest.permission.ACCESS_COARSE_LOCATION)
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            permissions.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-        }
-
-
-        locationPermissionRequest.launch(permissions.toTypedArray())
+    private fun navigateToSelectLocationScreen(){
+        _viewModel.navigationCommand.value =
+            NavigationCommand.To(SaveReminderFragmentDirections.actionSaveReminderFragmentToSelectLocationFragment())
     }
 }

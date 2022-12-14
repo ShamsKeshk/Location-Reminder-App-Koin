@@ -5,9 +5,16 @@ import com.udacity.project4.locationreminders.framework.model.Result
 
 class FakeLoadRemindersUseCaseTest: LoadRemindersUseCase {
 
+    var shouldReturnError = false
+    val defaultErrorMessage = "error getting Reminders"
+
     private val remindersData = mutableListOf<ReminderDataItem>()
 
     override suspend fun getReminders(): Result<List<ReminderDataItem>> {
-        return Result.Success(remindersData)
+        return if (shouldReturnError){
+            Result.Error(Throwable(defaultErrorMessage))
+        }else {
+            Result.Success(remindersData)
+        }
     }
 }
