@@ -5,5 +5,5 @@ import com.udacity.project4.locationreminders.framework.model.Result
 
 interface LoadRemindersUseCase {
 
-    suspend fun getReminders(): List<ReminderDataItem>
+    suspend fun getReminders(): Result<List<ReminderDataItem>>
 }

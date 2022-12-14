@@ -5,10 +5,17 @@ import com.udacity.project4.locationreminders.framework.model.Result
 
 class FakeRemindersRepository: ReminderRepository {
 
+    var shouldReturnError = false
+    var fakeGetRemindersErrorMessage = "Failed To getReminders"
+    var fakeGetReminderErrorMessage = "Failed To getReminder"
+
     private val remindersData = mutableListOf<ReminderDataItem>()
 
-    override suspend fun getReminders(): List<ReminderDataItem> {
-        return remindersData
+    override suspend fun getReminders(): Result<List<ReminderDataItem>> {
+        return when(shouldReturnError){
+            true -> Result.Error(Throwable(fakeGetRemindersErrorMessage))
+            else -> Result.Success(remindersData)
+        }
     }
 
     override suspend fun saveReminder(reminder: ReminderDataItem) {
@@ -20,7 +27,10 @@ class FakeRemindersRepository: ReminderRepository {
            it.id == id
        }
 
-        return Result.Success(item)
+        return when(shouldReturnError){
+            true -> Result.Error(Throwable(fakeGetReminderErrorMessage))
+            else -> Result.Success(item)
+        }
     }
 
     override suspend fun deleteAllReminders() {

@@ -7,7 +7,7 @@ class FakeLoadRemindersUseCaseTest: LoadRemindersUseCase {
 
     private val remindersData = mutableListOf<ReminderDataItem>()
 
-    override suspend fun getReminders(): List<ReminderDataItem> {
-        return remindersData
+    override suspend fun getReminders(): Result<List<ReminderDataItem>> {
+        return Result.Success(remindersData)
     }
 }

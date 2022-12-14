@@ -44,7 +44,7 @@ internal class LoadRemindersUseCaseImplTest{
         remindersRepository.saveReminder(reminderItem3)
 
         //When
-        val addedItem = loadRemindersUseCaseImpl.getReminders().size
+        val addedItem = loadRemindersUseCaseImpl.getReminders().getCurrentData()?.size
 
         //Then
         assertEquals(3,addedItem)
@@ -60,8 +60,22 @@ internal class LoadRemindersUseCaseImplTest{
         remindersRepository.deleteAllReminders()
 
         //Then
-        val addedItem = loadRemindersUseCaseImpl.getReminders().size
+        val addedItem = loadRemindersUseCaseImpl.getReminders().getCurrentData()?.size
         assertEquals(0,addedItem)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun getReminders_failedTestCase_returnExactFakeErrorMessage() = runTest {
+
+        remindersRepository.shouldReturnError = true
+
+        //When
+        val result = loadRemindersUseCaseImpl.getReminders()
+
+        //Then
+        assertEquals(true,result.isFailed())
+        assertEquals(remindersRepository.fakeGetRemindersErrorMessage,result.getCurrentError()?.message)
     }
 }
 

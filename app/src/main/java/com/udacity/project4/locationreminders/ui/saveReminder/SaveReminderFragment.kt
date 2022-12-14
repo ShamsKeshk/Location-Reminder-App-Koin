@@ -1,6 +1,8 @@
 package com.udacity.project4.locationreminders.ui.saveReminder
 
 import android.Manifest
+import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -72,9 +74,18 @@ class SaveReminderFragment : BaseFragment() {
         _viewModel.onClear()
     }
 
-    private fun launchRegisterPermission(){
-        locationPermissionRequest.launch(arrayOf(
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION))
+    @SuppressLint("MissingPermission")
+    fun launchRegisterPermission(){
+        val permissions = mutableListOf<String>().apply {
+            add(Manifest.permission.ACCESS_FINE_LOCATION)
+            add(Manifest.permission.ACCESS_COARSE_LOCATION)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            permissions.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+        }
+
+
+        locationPermissionRequest.launch(permissions.toTypedArray())
     }
 }

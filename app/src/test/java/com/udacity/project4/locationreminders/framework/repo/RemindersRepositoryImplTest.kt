@@ -1,5 +1,6 @@
 package com.udacity.project4.locationreminders.framework.repo
 
+import androidx.test.filters.SmallTest
 import com.udacity.project4.locationreminders.domain.usecases.loadReminders.LoadRemindersUseCaseImpl
 import com.udacity.project4.locationreminders.framework.local.dataSource.FakeLocalReminderDataSource
 import com.udacity.project4.locationreminders.framework.local.dataSource.LocalReminderDataSource
@@ -10,6 +11,9 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.*
 
+import kotlinx.coroutines.Dispatchers
+
+@SmallTest
 internal class RemindersRepositoryImplTest{
 
     private val reminderItem1 = ReminderDataItem("udacity",
@@ -31,7 +35,7 @@ internal class RemindersRepositoryImplTest{
     @Before
     fun createDataSourceAndRepo(){
         fakeLocalReminderDataSource = FakeLocalReminderDataSource()
-        remindersRepositoryImpl = RemindersRepositoryImpl(fakeLocalReminderDataSource)
+        remindersRepositoryImpl = RemindersRepositoryImpl(fakeLocalReminderDataSource, Dispatchers.Main)
     }
 
 
@@ -54,9 +58,13 @@ internal class RemindersRepositoryImplTest{
         remindersRepository.saveReminder(reminderItem1)
 
         //When
-        val addedItem = loadRemindersUseCaseImpl.getReminders().size
+        val result = loadRemindersUseCaseImpl.getReminders()
+
+
+        val addedItem = result.getCurrentData()?.size
 
         //Then
+        assertEquals(true,result.isSuccessful())
         assertEquals(1,addedItem)
     }
 
@@ -70,7 +78,10 @@ internal class RemindersRepositoryImplTest{
         remindersRepository.deleteAllReminders()
 
         //Then
-        val addedItem = loadRemindersUseCaseImpl.getReminders().size
+        val result = loadRemindersUseCaseImpl.getReminders()
+        val addedItem = result.getCurrentData()?.size
+
+        assertEquals(true,result.isSuccessful())
         assertEquals(0,addedItem)
     }
 
@@ -82,9 +93,11 @@ internal class RemindersRepositoryImplTest{
         remindersRepository.saveReminder(reminderItem2)
 
         //When
-        val addedItem = remindersRepository.getReminder("90").getCurrentData()
+        val result = remindersRepository.getReminder("90")
+        val addedItem = result.getCurrentData()
 
         //Then
+        assertEquals(true,result.isSuccessful())
         assertEquals(reminderItem2.id,addedItem?.id)
     }
 

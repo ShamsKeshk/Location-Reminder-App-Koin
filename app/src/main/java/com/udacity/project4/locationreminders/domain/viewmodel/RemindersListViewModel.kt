@@ -30,7 +30,7 @@ class RemindersListViewModel constructor(private val loadRemindersUseCase: LoadR
             showLoading.postValue(false)
             when (result) {
                 is Result.Success<*> -> {
-                    remindersList.value = result.getCurrentData()
+                    remindersList.value = result.getCurrentData()?.getCurrentData()
                 }
                 is Result.Error ->
                     showSnackBar.value = result.exception?.localizedMessage

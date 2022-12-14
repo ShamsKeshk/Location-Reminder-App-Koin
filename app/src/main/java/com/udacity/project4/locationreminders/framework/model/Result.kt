@@ -1,5 +1,7 @@
 package com.udacity.project4.locationreminders.framework.model
 
+import kotlin.Error
+
 
 /**
  * A sealed class that encapsulates successful outcome with a value of type [T]
@@ -39,6 +41,14 @@ sealed class Result<out T> {
     fun getCurrentData(): T?{
         if (this is Success){
             return this.data
+        }
+
+        return null
+    }
+
+    fun getCurrentError(): Throwable?{
+        if (this is Error){
+            return this.exception
         }
 
         return null

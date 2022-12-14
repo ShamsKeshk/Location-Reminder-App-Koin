@@ -8,7 +8,7 @@ import com.udacity.project4.locationreminders.framework.model.Result
  * Main entry point for accessing reminders data.
  */
 interface ReminderRepository {
-    suspend fun getReminders(): List<ReminderDataItem>
+    suspend fun getReminders(): Result<List<ReminderDataItem>>
     suspend fun saveReminder(reminder: ReminderDataItem)
     suspend fun getReminder(id: String): Result<ReminderDataItem?>
     suspend fun deleteAllReminders()

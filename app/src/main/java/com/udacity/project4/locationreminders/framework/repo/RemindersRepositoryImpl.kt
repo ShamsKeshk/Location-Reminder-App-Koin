@@ -22,11 +22,19 @@ class RemindersRepositoryImpl constructor(private val localDataSourceImpl: Local
      * Get the reminders list from the local db
      * @return Result the holds a Success with all the reminders or an Error object with the error message
      */
-    override suspend fun getReminders(): List<ReminderDataItem> {
-        wrapEspressoIdlingResource {
-            return localDataSourceImpl.getReminders().map {
-                it.asDomain()
+    override suspend fun getReminders(): Result<List<ReminderDataItem>> {
+        return wrapEspressoIdlingResource {
+            withContext(ioDispatcher) {
+                return@withContext try {
+                    val list = localDataSourceImpl.getReminders().map {
+                        it.asDomain()
+                    }
+                    Result.Success(list)
+                } catch (ex: Exception) {
+                    Result.Error(ex)
+                }
             }
+
         }
     }
 
@@ -46,17 +54,19 @@ class RemindersRepositoryImpl constructor(private val localDataSourceImpl: Local
      * @param id to be used to get the reminder
      * @return Result the holds a Success object with the Reminder or an Error object with the error message
      */
-    override suspend fun getReminder(id: String): Result<ReminderDataItem?> = withContext(ioDispatcher) {
-        wrapEspressoIdlingResource {
-            try {
-                val reminder = localDataSourceImpl.getReminderById(id)?.asDomain()
-                if (reminder != null) {
-                    return@withContext Result.Success(reminder)
-                } else {
-                    return@withContext Result.Error(Throwable("Reminder not found!"))
+    override suspend fun getReminder(id: String): Result<ReminderDataItem?> {
+        return wrapEspressoIdlingResource {
+            withContext(ioDispatcher) {
+                try {
+                    val reminder = localDataSourceImpl.getReminderById(id)?.asDomain()
+                    if (reminder != null) {
+                        return@withContext Result.Success(reminder)
+                    } else {
+                        return@withContext Result.Error(Throwable("Reminder not found!"))
+                    }
+                } catch (e: Exception) {
+                    return@withContext Result.Error(e)
                 }
-            } catch (e: Exception) {
-                return@withContext Result.Error(e)
             }
         }
     }
