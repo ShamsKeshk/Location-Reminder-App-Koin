@@ -7,11 +7,11 @@
         <deviceKey>
           <Key>
             <type value="VIRTUAL_DEVICE_PATH" />
-            <value value="$USER_HOME$/.android/avd/Nexus_7_API_29.avd" />
+            <value value="$USER_HOME$/.android/avd/Shams_TiramisuPrivacySandbox.avd" />
           </Key>
         </deviceKey>
       </Target>
     </targetSelectedWithDropDown>
-    <timeTargetWasSelectedWithDropDown value="2022-12-09T12:11:08.038407Z" />
+    <timeTargetWasSelectedWithDropDown value="2022-12-14T22:50:07.883800Z" />
   </component>
 </project>
