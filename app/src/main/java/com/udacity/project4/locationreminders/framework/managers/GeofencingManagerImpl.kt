@@ -52,7 +52,7 @@ class GeofencingManagerImpl constructor(val context: Context): GeofencingManager
                 reminderDataItem.latitude!!,
                 reminderDataItem.longitude!!,
                 GEOFENCE_RADIUS_IN_METERS)
-            .setExpirationDuration(GEOFENCE_EXPIRATION_IN_MILLISECONDS)
+            .setExpirationDuration(Geofence.NEVER_EXPIRE)
             .setTransitionTypes(
                 Geofence.GEOFENCE_TRANSITION_ENTER or
                         Geofence.GEOFENCE_TRANSITION_EXIT)
